@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  username String   @unique
+  password String
+  admin    Boolean  @default(false)
+  players  Player[]
+}
+
+model Player {
+  id           Int     @id @default(autoincrement())
+  userId       Int
+  race         String
+  credits      Int     @default(0)
+  shipId       Int?
+  currentSystemId Int?
+  user         User    @relation(fields: [userId], references: [id])
+  ship         Ship?   @relation(fields: [shipId], references: [id])
+  currentSystem System? @relation("PlayerCurrentSystem", fields: [currentSystemId], references: [id])
+}
+
+model System {
+  id          Int      @id @default(autoincrement())
+  name        String
+  coordsX     Int
+  coordsY     Int
+  raceType    String?
+  ports       Port[]
+  playersHere Player[] @relation("PlayerCurrentSystem")
+}
+
+model Port {
+  id            Int    @id @default(autoincrement())
+  systemId      Int
+  goodsAvailable Json?  // JSON for goods list/prices
+  upgradeLevel  Int    @default(0)
+  system        System @relation(fields: [systemId], references: [id])
+}
+
+model Good {
+  id         Int    @id @default(autoincrement())
+  name       String
+  basePrice  Int
+}
+
+model Ship {
+  id         Int      @id @default(autoincrement())
+  name       String
+  cargoSpace Int
+  weapons    Json?    // JSON for weapon stats
+  players    Player[]
+}
