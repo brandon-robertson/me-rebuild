@@ -67,6 +67,12 @@ app.get('/api/player', authMiddleware, async (req, res) => {
   res.json(player);
 });
 
+// Get all systems
+app.get('/api/systems', authMiddleware, async (req, res) => {
+  const systems = await prisma.system.findMany();
+  res.json(systems);
+});
+
 // Move to system (protected; basic validation)
 app.post('/api/move', authMiddleware, async (req, res) => {
   const { systemId } = req.body;
