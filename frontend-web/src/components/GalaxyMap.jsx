@@ -12,7 +12,7 @@ const GalaxyMap = () => {
   useEffect(() => {
     const fetchSystems = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/systems', { // Assume /api/systems endpoint; add to backend if needed
+        const res = await axios.get('https://super-acorn-wvr5gpjrxq2vgvw-5000.app.github.dev/api/systems', { // Assume /api/systems endpoint; add to backend if needed
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
         setSystems(res.data);
@@ -34,7 +34,7 @@ const GalaxyMap = () => {
   // Handle move click
   const handleMove = async (systemId) => {
     try {
-      await axios.post('http://localhost:5000/api/move', { systemId }, {
+      await axios.post('https://super-acorn-wvr5gpjrxq2vgvw-5000.app.github.dev/api/move', { systemId }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       setCurrentSystem(systemId);

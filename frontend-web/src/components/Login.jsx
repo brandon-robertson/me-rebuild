@@ -16,7 +16,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/login', { username, password });
+      const res = await axios.post('https://super-acorn-wvr5gpjrxq2vgvw-5000.app.github.dev/api/login', { username, password });
       dispatch({ type: 'LOGIN_SUCCESS', payload: { token: res.data.token } });
       navigate('/game'); // Redirect to game page on success
     } catch (err) {

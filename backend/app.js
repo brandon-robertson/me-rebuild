@@ -52,8 +52,16 @@ app.post('/api/register', async (req, res) => {
 // Login route: Authenticate user
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
+  console.log('Login attempt for username:', username); // Log received username
+  console.log('Received password:', password); // Log plain password from frontend (for debug only; remove in production)
   const user = await prisma.user.findUnique({ where: { username } });
-  if (!user || !(await bcrypt.compare(password, user.password))) {
+  console.log('Fetched user from DB:', user ? 'User found (id: ' + user.id + ', hash: ' + user.password.substring(0, 10) + '...)' : 'No user found'); // Log user details (partial hash for safety)
+  if (!user) {
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+  const match = await bcrypt.compare(password, user.password);
+  console.log('Bcrypt compare result:', match); // True if match, false if not
+  if (!match) {
     return res.status(401).json({ error: 'Invalid credentials' });
   }
   const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1h' });
