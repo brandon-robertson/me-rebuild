@@ -11,7 +11,7 @@ const Trading = () => {
   useEffect(() => {
     const fetchGoods = async () => {
       try {
-        const res = await axios.get(`https://super-acorn-wvr5gpjrxq2vgvw-5000.app.github.dev/api/port/${portId}/goods`, { // Assume endpoint; add if needed
+        const res = await axios.get(`/api/port/:id/goods`, { // Assume endpoint; add if needed
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
         setGoods(res.data);
@@ -25,7 +25,7 @@ const Trading = () => {
   // Handle trade
   const handleTrade = async (goodId, quantity, action) => {
     try {
-      await axios.post('https://super-acorn-wvr5gpjrxq2vgvw-5000.app.github.dev/api/trade', { portId, goodId, quantity, action }, {
+      await axios.post('/api/trade', { portId, goodId, quantity, action }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       // Refresh goods or player credits

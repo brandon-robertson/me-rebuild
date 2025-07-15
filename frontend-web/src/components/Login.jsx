@@ -16,7 +16,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('https://super-acorn-wvr5gpjrxq2vgvw-5000.app.github.dev/api/login', { username, password });
+      const res = await axios.post('/api/login', { username, password });
       dispatch({ type: 'LOGIN_SUCCESS', payload: { token: res.data.token } });
       navigate('/game'); // Redirect to game page on success
     } catch (err) {
@@ -35,6 +35,7 @@ const Login = () => {
       <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
       <button type="submit">Login</button>
       {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error message */}
+      <p>Don't have an account? <a href="/register">Register here</a></p> {/* New link */}
     </form>
   );
 };
