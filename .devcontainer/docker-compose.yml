@@ -3,7 +3,7 @@ services:
   app:
     image: mcr.microsoft.com/devcontainers/javascript-node:20
     volumes:
-      - .:/workspace:cached
+      - ../:/workspace:cached
     command: sleep infinity
   db:
     image: postgres:16
