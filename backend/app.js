@@ -101,19 +101,27 @@ app.post('/api/trade', authMiddleware, async (req, res) => {
   res.json({ message: `${action} completed for ${quantity} of good ${goodId}` });
 });
 
-// Admin: Generate galaxy (protected; procedural like original)
+// Admin: Generate galaxy (procedural like original)
 app.post('/api/admin/generate-galaxy', authMiddleware, async (req, res) => {
   const user = await prisma.user.findUnique({ where: { id: req.user.id } });
   if (!user.admin) return res.status(403).json({ error: 'Admin only' });
-  const seed = req.body.seed || Math.random(); // Use seed for reproducibility
-  // TODO: Procedural generation logic (create systems, balance races, ports)
-  // For placeholder: Create 10 systems
-  for (let i = 0; i < 10; i++) {
-    await prisma.system.create({
-      data: { name: `System ${i}`, coordsX: i * 10, coordsY: i * 10, raceType: 'Neutral' }
+  const seed = req.body.seed || Math.random(); // Seed for reproducibility
+  console.log('Generating galaxy with seed:', seed);
+  // Clear existing systems/ports (for dev)
+  await prisma.port.deleteMany({});
+  await prisma.system.deleteMany({});
+  // Procedural gen: Create 50 systems, balance races
+  const races = ['Xollian', 'Mawlor', 'Zycklirg', 'Neutral']; // From original
+  for (let i = 0; i < 50; i++) {
+    const system = await prisma.system.create({
+      data: { name: `System ${i + 1}`, coordsX: Math.floor(seed * i * 10), coordsY: Math.floor(seed * i * 5), raceType: races[i % races.length] }
+    });
+    // Add port to each system
+    await prisma.port.create({
+      data: { systemId: system.id, goodsAvailable: { goods: [1,2,3,4,5] }, upgradeLevel: 0 } // All goods IDs
     });
   }
-  res.json({ message: 'Galaxy generated' });
+  res.json({ message: 'Galaxy generated with 50 systems' });
 });
 
 // Socket.io setup for real-time (chat, combat, etc.)
